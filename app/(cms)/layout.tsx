@@ -1,10 +1,11 @@
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-				<h1>CMS</h1>
-				{children}
-			</body>
+        <div className="cms-container">
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
