@@ -2,29 +2,34 @@ import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "./utils/supabase/middleware";
 
 export async function middleware(request: NextRequest) {
-  // For Outstatic routes, preserve cookies but skip Supabase auth
+  // Handle CORS preflight requests for Outstatic routes
+  if (request.method === 'OPTIONS' && 
+    (request.nextUrl.pathname.startsWith('/outstatic') || 
+     request.nextUrl.pathname.startsWith('/api/outstatic'))
+  ) {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': 'http://localhost:3000',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS,POST,DELETE',
+        'Access-Control-Allow-Headers': '*',
+      },
+    });
+  }
+
+  // Skip middleware for all Outstatic routes (non-OPTIONS requests)
   if (
     request.nextUrl.pathname.startsWith('/outstatic') || 
     request.nextUrl.pathname.startsWith('/api/outstatic')
   ) {
-    // const response = NextResponse.next();
-    
-    // // Preserve all existing cookies
-    // const cookies = request.cookies.getAll();
-    // cookies.forEach(cookie => {
-    //   // Only set cookies that are related to GitHub/Outstatic
-    //   if (cookie.name.includes('gh_') || 
-    //       cookie.name.includes('_octo') || 
-    //       cookie.name.includes('_Host-user_session') ||
-    //       cookie.name.includes('user_session')) {
-    //     response.cookies.set(cookie.name, cookie.value);
-    //   }
-    // });
-
-    // return response;
+    const response = NextResponse.next();
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+    response.headers.set('Access-Control-Allow-Origin', 'http://localhost:3000');
+    return response;
   }
 
-  // For all other routes, use Supabase auth
+  // Handle Supabase auth for all other routes
   return await updateSession(request);
 }
 
