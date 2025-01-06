@@ -1,20 +1,26 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/utils/supabase/middleware";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  // Skip middleware completely for Outstatic routes and their cookies
+  if (
+    request.nextUrl.pathname.startsWith('/outstatic') || 
+    request.nextUrl.pathname.startsWith('/api/outstatic')
+  ) {
+    return NextResponse.next({
+      request: {
+        headers: new Headers({
+          'x-middleware-skip': '1',
+          ...Object.fromEntries(request.headers)
+        })
+      }
+    });
+  }
+
+  // Rest of your middleware code...
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     * Feel free to modify this pattern to include more paths.
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ]
+}
