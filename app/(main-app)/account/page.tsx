@@ -39,7 +39,7 @@ export default async function ProtectedPage() {
       </div>
 
       <div>
-        <h2>Manage children in your account</h2>
+        <h2 id="children" className="font-bold text-2xl mb-4">Manage children in your account</h2>
         {(children?.length === 0 || !children) ? (
           <div className="text-center py-6 text-muted-foreground">
             You haven't added any children yet.
