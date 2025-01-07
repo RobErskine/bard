@@ -3,6 +3,7 @@ import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { ChildListItem } from "@/components/ui/child-list.item";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -48,18 +49,7 @@ export default async function ProtectedPage() {
         ) : (
           <div className="grid gap-4">
             {children?.map((child) => (
-              <div
-                key={child.id}
-                className="p-4 border rounded-lg flex justify-between items-center"
-              >
-                <div>
-                  <h3 className="font-medium">{child.name}</h3>
-                  <p className="text-sm text-muted-foreground">{child.birthdate}</p>
-                </div>
-                <Link href={`/account/children/${child.id}`}>
-                  <Button variant="outline">View Details</Button>
-                </Link>
-              </div>
+              <ChildListItem key={child.id} child={child} />
             ))}
           </div>
         )}
