@@ -1,8 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { ChildListItem } from "@/components/ui/child-list.item";
 
 export default async function ProtectedPage() {

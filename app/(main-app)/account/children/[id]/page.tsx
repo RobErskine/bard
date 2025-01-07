@@ -34,7 +34,8 @@ interface ChildPageProps {
 }
 
 export default async function ChildPage({ params }: ChildPageProps) {
-  const child = await getChild(params.id);
+  const { id } = await params;
+  const child = await getChild(id);
 
   return (
     <div className="container max-w-3xl py-8">
