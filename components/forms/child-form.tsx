@@ -37,14 +37,15 @@ interface ChildFormProps {
       relationship_value: string;
     } | string;
   };
-  childId: string;
+  childId?: string;
+  mode?: 'create' | 'edit';
 }
 
 interface RelationshipType {
   relationship_value: string;
 }
 
-export function ChildForm({ initialData, childId }: ChildFormProps) {
+export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProps) {
   const router = useRouter();
   const [relationshipTypes, setRelationshipTypes] = useState<RelationshipType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,20 +89,39 @@ export function ChildForm({ initialData, childId }: ChildFormProps) {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch(`/api/children/${childId}`, {
-        method: 'PATCH',
-        body: JSON.stringify(values),
-      });
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
 
-      if (!response.ok) {
-        throw new Error('Failed to update child');
+      if (!user) {
+        throw new Error('Not authenticated');
       }
 
-      toast.success('Child updated successfully');
+      if (mode === 'create') {
+        const { error } = await supabase
+          .from('children')
+          .insert([{ ...values, user_id: user.id }]);
+
+        if (error) throw error;
+        
+        toast.success('Child added successfully');
+      } else {
+        const response = await fetch(`/api/children/${childId}`, {
+          method: 'PATCH',
+          body: JSON.stringify(values),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update child');
+        }
+
+        toast.success('Child updated successfully');
+      }
+
       router.refresh();
-      router.push('/account/children');
+      router.push('/account#children');
     } catch (error) {
       toast.error('Something went wrong');
+      console.error('Error:', error);
     }
   };
 

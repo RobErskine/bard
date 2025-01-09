@@ -2,6 +2,10 @@ import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { ChildListItem } from "@/components/ui/child-list.item";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { formatTime } from "@/lib/utils";
+import { signOutAction } from "@/app/actions";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -33,13 +37,24 @@ export default async function ProtectedPage() {
       </div>
       <div className="flex flex-col gap-2 items-start">
         <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
+        {/* <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
           {JSON.stringify(user, null, 2)}
-        </pre>
+        </pre> */}
+        <p><strong>Email</strong>: {user.email}</p>
+        {user.email_confirmed_at ? (
+          <p><strong>User since</strong>: {formatTime(user.email_confirmed_at)}</p>
+        ) : (
+          <p className="text-muted-foreground">Please check your email to confirm your account.</p>
+        )}
       </div>
 
       <div>
-        <h2 id="children" className="font-bold text-2xl mb-4">Manage children in your account</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 id="children" className="font-bold text-2xl">Manage children in your account</h2>
+          <Button asChild>
+            <Link href="/account/children/new">Add Child</Link>
+          </Button>
+        </div>
         {(children?.length === 0 || !children) ? (
           <div className="text-center py-6 text-muted-foreground">
             You haven't added any children yet.
@@ -51,6 +66,14 @@ export default async function ProtectedPage() {
             ))}
           </div>
         )}
+      </div>
+      <div>
+        <form action={signOutAction} className="flex flex-col gap-2">
+          <h2 id="signout" className="font-bold text-2xl">Manage session:</h2>
+          <Button type="submit" variant={"secondary"}>
+            Sign out
+          </Button>
+        </form>
       </div>
     </div>
   );

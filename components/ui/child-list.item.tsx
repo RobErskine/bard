@@ -7,6 +7,7 @@ export interface ChildListItemProps {
 		id: string;
 		name: string;
 		birthdate: string;
+		your_relationship: string;
 	}
 }
 
@@ -66,10 +67,18 @@ function ChildListItem({ className, child }: ChildListItemProps) {
 			className="p-4 border rounded-lg flex justify-between items-center"
 		>
 			<div>
-				<h3 className="font-medium">{child.name}</h3>
+				<div className="flex items-center gap-2">
+					<h3 className="font-medium">{child.name}</h3>
+					<p className="text-sm text-muted-foreground">
+						{getAge(child.birthdate)}
+						{birthdayCountdown(child.birthdate)}
+					</p>
+				</div>
 				<p className="text-sm text-muted-foreground">
-					{getAge(child.birthdate)}
-					{birthdayCountdown(child.birthdate)}</p>
+					{child.your_relationship
+						? `You are their: ${child.your_relationship}`
+						: "No relationship yet"}
+				</p>
 			</div>
 			<Link href={`/account/children/${child.id}`}>
 				<Button variant="outline">View Details</Button>
