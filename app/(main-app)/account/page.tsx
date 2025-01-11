@@ -23,11 +23,12 @@ export default async function ProtectedPage() {
     .select('*')
     .eq('user_id', user.id);
 
-  console.log(user.id)
-  console.log('children', children, error)
-
+  if (error) {
+    throw error;
+  }
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
+      {/* Protective page message */}
       <div className="w-full">
         <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
           <InfoIcon size="16" strokeWidth={2} />
@@ -35,6 +36,8 @@ export default async function ProtectedPage() {
           user
         </div>
       </div>
+
+      {/* Show user information */}
       <div className="flex flex-col gap-2 items-start">
         <h2 className="font-bold text-2xl mb-4">Your user details</h2>
         {/* <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
@@ -48,6 +51,14 @@ export default async function ProtectedPage() {
         )}
       </div>
 
+      {/* Small stories list */}
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h2 id="stories" className="font-bold text-2xl">Your stories</h2>
+        </div>
+      </div>
+
+      {/* Child List */}
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 id="children" className="font-bold text-2xl">Manage children in your account</h2>
@@ -67,6 +78,8 @@ export default async function ProtectedPage() {
           </div>
         )}
       </div>
+
+      {/* Log a user out */}
       <div>
         <form action={signOutAction} className="flex flex-col gap-2">
           <h2 id="signout" className="font-bold text-2xl">Manage session:</h2>
