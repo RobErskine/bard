@@ -18,14 +18,27 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
-  const { data: children = [], error } = await supabase
+  const { data: children = [], error: childrenError } = await supabase
     .from('children')
     .select('*')
     .eq('user_id', user.id);
 
-  if (error) {
-    throw error;
+  if (childrenError) {
+    console.log(childrenError);
   }
+
+  const { data: stories = [], error: storiesError } = await supabase
+    .from('stories')
+    .select('*')
+    .limit(3)
+    .eq('user_id', user.id);
+
+  console.log(stories)
+
+  if (storiesError) {
+    console.log(storiesError);
+  }
+
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       {/* Protective page message */}
@@ -55,7 +68,21 @@ export default async function ProtectedPage() {
       <div>
         <div className="flex justify-between items-center mb-4">
           <h2 id="stories" className="font-bold text-2xl">Your stories</h2>
+          <Button asChild>
+            <Link href="/account/stories/new">Add Story</Link>
+          </Button>
         </div>
+        {(stories?.length === 0 || !stories) ? (
+          <div className="text-center py-6 text-muted-foreground">
+            You haven't added any stories yet.
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {stories?.map((child) => (
+              <div>{child.id}</div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Child List */}
