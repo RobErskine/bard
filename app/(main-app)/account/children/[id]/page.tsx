@@ -14,10 +14,10 @@ async function getChild(childId: string) {
   }
 
   const { data: child } = await supabase
-    .from('children')
-    .select('*')
-    .eq('id', childId)
-    .eq('user_id', user.id)
+    .from("children")
+    .select("*")
+    .eq("id", childId)
+    .eq("user_id", user.id)
     .single();
 
   if (!child) {
@@ -28,22 +28,22 @@ async function getChild(childId: string) {
 }
 
 interface ChildPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ChildPage({ params }: ChildPageProps) {
+  // Await the params to destructure id
   const { id } = await params;
+
+  // Fetch the child data
   const child = await getChild(id);
 
   return (
     <div className="container max-w-3xl py-8">
-      <h1 className="text-2xl font-bold mb-8">Edit {child.name}&apos;s Details</h1>
-      <ChildForm 
-        initialData={child}
-        childId={child.id}
-      />
+      <h1 className="text-2xl font-bold mb-8">
+        Edit {child.name}&apos;s Details
+      </h1>
+      <ChildForm initialData={child} childId={child.id} />
     </div>
   );
 }

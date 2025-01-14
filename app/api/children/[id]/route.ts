@@ -1,13 +1,14 @@
 import { createClient } from "@/utils/supabase/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
-    const { id } = params;
+    const { id } = await context.params; // Await the params
+
     const values = await req.json();
 
     const {
@@ -19,10 +20,10 @@ export async function PATCH(
     }
 
     const { data: child, error } = await supabase
-      .from('children')
+      .from("children")
       .update(values)
-      .eq('id', id)
-      .eq('user_id', user.id)
+      .eq("id", id)
+      .eq("user_id", user.id)
       .select()
       .single();
 
