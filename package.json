@@ -6,6 +6,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@keystatic/core": "^0.5.43",
+    "@keystatic/next": "^5.0.2",
+    "@markdoc/markdoc": "^0.4.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-label": "^2.1.1",
@@ -18,17 +21,16 @@
     "lucide-react": "^0.468.0",
     "next": "latest",
     "next-themes": "^0.4.3",
-    "outstatic": "^1.4.14",
     "prettier": "^3.3.3",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "sonner": "^1.7.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "22.10.2",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "19.0.2",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "postcss": "8.4.49",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "3.4.17",
