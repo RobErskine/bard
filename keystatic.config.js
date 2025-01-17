@@ -2,6 +2,9 @@
 import { config, fields, collection } from '@keystatic/core';
 
 export default config({
+  ui: {
+    brand: { name: 'lil Bardy Dashboard' },
+  },
   storage: {
     kind: 'cloud'
   },
@@ -16,6 +19,11 @@ export default config({
       format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
+        featuredImage: fields.image({ 
+          label: 'Featured Image',
+          directory: 'public/images/thumbnails',
+          publicPath: '/images/thumbnails'
+        }),
         content: fields.markdoc({ label: 'Content' }),
       },
     }),
