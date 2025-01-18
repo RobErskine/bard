@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "../ui/textarea";
 import { Select } from "../ui/select";
+import { Instruction } from "../ui/instruction";
+import { LoadingIndicator } from "../ui/loading-indicator";
 import { toast } from "sonner";
 
 const formSchema = z.object({
@@ -132,7 +134,7 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingIndicator />
   }
 
   return (
@@ -158,14 +160,17 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
           render={({ field }) => (
             <FormItem>
               <FormLabel>Prompt</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Textarea 
                   placeholder="Enter story prompt" 
-                  className="min-h-[100px]"
+                  className="min-h-[100px] rounded-b-none"
                   {...field} 
                 />
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={true} title="What is a prompt?">
+                <p>Think of this Prompt as a starter for your story. Should include the characters, setting, theme, conflict, etc for what you want Lil' Bardy to write.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -176,10 +181,13 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
           render={({ field }) => (
             <FormItem>
               <FormLabel>Theme</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter story theme" {...field} />
-              </FormControl>
               <FormMessage />
+              <FormControl>
+                <Input placeholder="Enter story theme" className="rounded-b-none" {...field} />
+              </FormControl>
+              <Instruction defaultOpen={true} title="What is a theme?">
+                <p>You can think of the Theme as a "moral of the story". It could be about sharing, kindness, eating your veggies, the importance of telling the truth, etc.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -190,8 +198,9 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
           render={({ field }) => (
             <FormItem>
               <FormLabel>Reading Time</FormLabel>
+              <FormMessage />
               <FormControl>
-                <Select {...field} disabled={isLoading}>
+                <Select {...field} disabled={isLoading} className="rounded-b-none">
                   <option value="">Select reading time</option>
                   {readingTimeOptions.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -200,7 +209,9 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
                   ))}
                 </Select>
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={true} title="What does reading time do?">
+                <p>Specifying the reading time will indicate how long your generated story should be. This takes into account reading, voices, pauses, etc.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -211,6 +222,7 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
           render={({ field }) => (
             <FormItem>
               <FormLabel>Story Structure</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Select {...field} disabled={isLoading}>
                   <option value="">Select story structure</option>
@@ -221,7 +233,15 @@ export function StoryForm({ initialData, storyId, mode = 'create' }: StoryFormPr
                   ))}
                 </Select>
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={true} title="What is a prompt?">
+                <p className="mb-2">Story structure shapes how your generated story will flow:</p>
+                <ul className="list-disc pl-4">
+                  <li className="mb-2"><strong>Traditional (Three-Act)</strong>: A linear narrative divided into setup, confrontation, and resolution, where a protagonist faces and ultimately overcomes a central conflict.</li>
+                  <li className="mb-2"><strong>Five-Act</strong>: A dramatic structure popularized by Shakespeare that follows exposition, rising action, climax, falling action, and denouement, allowing for more complex plot development and multiple turning points.</li>
+                  <li className="mb-2"><strong>Seven-Point</strong>: A story framework that progresses through hook, plot turn 1, pinch point 1, midpoint, pinch point 2, plot turn 2, and resolution, creating a detailed roadmap for character development and plot progression.</li>
+                  <li><strong>Kishotenketsu</strong>: A four-part East Asian narrative structure consisting of introduction (ki), development (sho), twist (ten), and conclusion (ketsu) that doesn't rely on conflict but rather on contrast and revelation.</li>
+                </ul>
+              </Instruction>
             </FormItem>
           )}
         />

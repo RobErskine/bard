@@ -13,13 +13,17 @@ export default async function Page() {
   // 2. Read the "Posts" collection
   const posts = await reader.collections.posts.all();
   return (
-    <ul>
+    <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {posts.map(post => (
         <li key={post.slug}>
-          {post.entry.featuredImage && (
-            <Image src={post.entry.featuredImage} alt="" width="100" height="100" />
-          )}
-          <Link href={`/blog/${post.slug}`}>{post.entry.title}</Link>
+          <Link href={`/blog/${post.slug}`}>
+            {post.entry.featuredImage && (
+              <div className="relative w-full rounded-br-2xl overflow-hidden">
+                <Image className="object-cover w-full block" src={`${post.entry.featuredImage}`} alt="" width="400" height="225" />
+              </div>
+            )}
+            <h2 className="inline-block leading-5 mt-3">{post.entry.title}</h2>
+          </Link>
         </li>
       ))}
     </ul>
