@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import { Select } from "../ui/select";
+import { Instruction } from "../ui/instruction";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -87,6 +88,8 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
     },
   });
 
+  const childName = form.watch('name');
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const supabase = createClient();
@@ -99,7 +102,12 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
       if (mode === 'create') {
         const { error } = await supabase
           .from('children')
-          .insert([{ ...values, user_id: user.id }]);
+          .insert([
+            { 
+              ...values,
+              user_id: user.id 
+            }
+          ]);
 
         if (error) throw error;
         
@@ -134,10 +142,10 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Input {...field} />
               </FormControl>
-              <FormMessage />
             </FormItem>
           )}
         />
@@ -147,10 +155,13 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Birthdate</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={false} title="Why do you need a birthdate?">
+                <p>We use this birthdate field to calculate this child's age to make sure that the stories that are generated are age appropriate. We may also use this to create a countdown or send reminders when the date gets close.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -160,6 +171,7 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Relationship</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Select {...field} disabled={isLoading}>
                   <option value="">Select a relationship</option>
@@ -170,7 +182,9 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
                   ))}
                 </Select>
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={false} title={`Why do you need my relation to ${childName ? childName : " this child"}?`}>
+                <p>If you want to write stories for many children in your life, we use this as a way to keep track of your relationship to each child. In the future we may use this to generate stories that are more specific to your relationship to the child.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -180,10 +194,13 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Interests</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={false} title={`Why do you need ${childName ? childName + "'s" : " this child's"} interests?`}>
+                <p>We use interests to help generate stories that your child will love. The more specific you can be about what they enjoy, the better we can tailor stories to their preferences.</p>
+              </Instruction>
             </FormItem>
           )}
         />
@@ -193,10 +210,13 @@ export function ChildForm({ initialData, childId, mode = 'edit' }: ChildFormProp
           render={({ field }) => (
             <FormItem>
               <FormLabel>Dislikes</FormLabel>
+              <FormMessage />
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
-              <FormMessage />
+              <Instruction defaultOpen={false} title={`Why do you need ${childName ? childName + "'s" : " this child's"} dislikes?`}>
+                <p>We'll be sure to avoid anything that your child doesn't like.</p>
+              </Instruction>
             </FormItem>
           )}
         />
